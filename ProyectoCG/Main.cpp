@@ -1,6 +1,3 @@
-#include<filesystem>
-namespace fs = std::filesystem;
-
 #include"Model.h"
 
 
@@ -49,13 +46,25 @@ int main()
 
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
-	std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
-	std::string modelPath = "/Resources/space_exploration_wlp_series_8/scene.gltf";
+	std::string modelPath = "Resources/space_exploration_wlp_series_8/scene.gltf";
 
-	Model model((parentDir + modelPath).c_str());
+	Model model((modelPath).c_str());
+
+	std::string modelPath2 = "Resources/satelite/scene.gltf";
+	Model model2((modelPath2).c_str());
+
+	std::string modelPath3 = "Resources/3december_2021_day_18_astronaut/scene.gltf";
+	Model model3((modelPath3).c_str());
+
+
+	float angle = glfwGetTime();
 
 	while (!glfwWindowShouldClose(window))
 	{
+		angle = glfwGetTime();
+
+		float posX = sin(angle) * 20;
+		float posY = cos(angle) * 20;
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -64,7 +73,11 @@ int main()
 		camera.Inputs(window);
 		camera.updateMatrix(0.1f, 1000.0f);
 
-		model.Draw(shaderProgram, camera, glm::vec3(0.0f,0.0f,0.0f), 1.0f);
+		model.Draw(shaderProgram, camera, glm::vec3(0.0f,0.0f,0.0f), glm::vec3(angle, -2.5f, 0.0f), 0.5f);
+
+		model2.Draw(shaderProgram, camera, glm::vec3(0.0f, posY, posX), glm::vec3(angle, -2.5f, 0.0f) , 0.2f);
+
+		model3.Draw(shaderProgram, camera, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(angle, -2.5f, 0.0f), 1.0f);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
