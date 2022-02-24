@@ -44,7 +44,7 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(width, height, glm::vec3(-4.0f, 0.0f, 0.0f));
 
 	std::string modelPath = "Resources/space_exploration_wlp_series_8/scene.gltf";
 
@@ -56,22 +56,32 @@ int main()
 	std::string modelPath3 = "Resources/3december_2021_day_18_astronaut/scene.gltf";
 	Model model3((modelPath3).c_str());
 
+	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), 1.0f, 0.0f, 0.0f, 1.0f);
 
 	float angle = glfwGetTime();
 
 	while (!glfwWindowShouldClose(window))
 	{
+
+		glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+		glm::mat4 lightModel = glm::mat4(1.0f);
+		lightModel = glm::translate(lightModel, lightPos);
+
 		angle = glfwGetTime();
 
 		float posX = sin(angle) * 20;
 		float posY = cos(angle) * 20;
 
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 		camera.Inputs(window);
 		camera.updateMatrix(0.1f, 1000.0f);
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camViewDirection"), camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
 
 		model.Draw(shaderProgram, camera, glm::vec3(0.0f,0.0f,0.0f), glm::vec3(angle, -2.5f, 0.0f), 0.5f);
 
