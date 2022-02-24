@@ -45,8 +45,7 @@ vec4 pointLight()
 
 	// specular lighting
 	float specularLight = 0.50f;
-	//vec3 viewDirection = normalize(camPos - crntPos);
-	vec3 viewDirection = camViewDirection;
+	vec3 viewDirection = normalize(camPos - crntPos);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
 	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
 	float specular = specAmount * specularLight;
