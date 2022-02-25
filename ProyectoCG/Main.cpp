@@ -5,10 +5,10 @@ const unsigned int width = 800;
 const unsigned int height = 800;
 
 
+
 int main()
 {
 	glfwInit();
-
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -35,12 +35,16 @@ int main()
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
+	glm::vec3 pointLightPos = glm::vec3(0.0f, 0.0f, 0.0f);
+
 	lightModel = glm::translate(lightModel, lightPos);
 
 	shaderProgram.Activate();
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
+	glUniform4f(glGetUniformLocation(shaderProgram.ID, "pointLightColor"), 0.0f, 0.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "pointLightPos"), pointLightPos.x, pointLightPos.y, pointLightPos.z);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -83,11 +87,15 @@ int main()
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camViewDirection"), camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
 
+
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "pointLightPos"), 0.0f, -posY, posX);
+
+
 		model.Draw(shaderProgram, camera, glm::vec3(0.0f,0.0f,0.0f), glm::vec3(angle, -2.5f, 0.0f), 0.5f);
 
 		model2.Draw(shaderProgram, camera, glm::vec3(0.0f, posY, posX), glm::vec3(angle, -2.5f, 0.0f) , 0.2f);
 
-		model3.Draw(shaderProgram, camera, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(angle, -2.5f, 0.0f), 1.0f);
+		model3.Draw(shaderProgram, camera, glm::vec3(-posY*2 , posY*2, posX*2), glm::vec3(angle, -2.5f, 0.0f), 1.0f);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
